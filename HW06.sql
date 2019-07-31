@@ -153,8 +153,7 @@ WHERE c1.sea = c2.sea AND c1.mountain = c2.mountain AND c1.name < c2.name;
 /* 12. Modify the query from 11. to return, for each pair of countries, the list of common mountains, and the list of common seas. Name your output attributes first_country, second_country, mountain, sea. 
 [Result Size: 7 rows of {"mountains":[{"mountain":...}, ...], "seas":[{"sea":...}, ...], "first_country":..., "second_country":...}]*/
 
-USE hw5index;
-
+																       USE hw5index;
 SELECT c1.name as first_country, c2.name as second_country, mountains, seas
 FROM country c1, country c2
 LET seas = (SELECT DISTINCT s.name as sea
