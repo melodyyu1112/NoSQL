@@ -20,7 +20,7 @@ FROM hw5.world x, x.mondial.country c
 /* 3. For each religion return the number of countries where it occurs; order them in decreasing number of countries. Name your output attributes religion, num_countries. 
 [Result size: 37 of {"religion':..., "num_countries":...} (order of keys can differ)]*/
 
-SELECT  r.`#text` as religion, count(r.`#text`) as num_countries
+SELECT r.`#text` as religion, count(r.`#text`) as num_countries
 FROM hw5.world x, x.mondial.country c,
 	CASE WHEN c.religions IS MISSING THEN []
 	      WHEN is_array(c.religions) THEN c.religions
@@ -31,7 +31,7 @@ group by r.`#text`;
 [Result Size: 262 of {"ethnic_group":..., "num_countries":..., "total_population":...} (order of keys can differ)]*/
 
 select u.text as ethnic_group, count(*) as num_countries, sum(float(u.percent) * float(u.pop) /100.0) as total_population
-from(select y.population as pop,
+from( select y.population as pop,
 	    z.`#text` as text,
 	    z.`-percentage` as percent from hw5.world x,
             x.mondial.country y,
@@ -71,11 +71,11 @@ where coll_count(seas) > 2;
 Note: this should be an easy query to derive from the previous one. Name your output attributes country_code, country_name, area. 
 [Result Size: 45 rows of {"country_code":..., "country_name":..., "area":...} (order of keys can differ)]*/
 
-SELECT y.name AS countryName, y.`-car_code` AS country_code,  y.`-area` as area
-FROM hw5.world x, x.mondial.country y
-LET m = ( SELECT z.name AS sea
+SELECT y.name AS countryName, y.`-car_code` AS country_code,  y.`-area` as area 
+	FROM hw5.world x, x.mondial.country y
+	LET m = ( SELECT z.name AS sea
 FROM hw5.world x2, x2.mondial.sea z, split(z.`-country`, ' ') r
-WHERE y.`-car_code` = r)
+	WHERE y.`-car_code` = r)
 WHERE coll_count(m) <1
 ORDER BY area desc ;
 
@@ -86,12 +86,12 @@ Name your output attributes first_country, second_country. [Result Size: 7 rows 
 
 SELECT distinct c1.name as first_country, c2.name as second_country
 FROM
-(SELECT c.name as name, s.name as sea, m.name as mountain
-FROM hw5.world x, x.mondial.country c, x.mondial.sea s, x.mondial.mountain m, split(s.`-country`, " ") seas, split(m.`-country`, " ") mt
-WHERE seas = c.`-car_code` and mt = c.`-car_code` ) as c1,
-(SELECT c.name as name, s.name as sea, m.name as mountain
-FROM hw5.world x, x.mondial.country c, x.mondial.sea s, x.mondial.mountain m, split(s.`-country`, " ") seas, split(m.`-country`, " ") mt
-WHERE seas = c.`-car_code` and mt = c.`-car_code` ) as c2
+	(SELECT c.name as name, s.name as sea, m.name as mountain
+	FROM hw5.world x, x.mondial.country c, x.mondial.sea s, x.mondial.mountain m, split(s.`-country`, " ") seas, split(m.`-country`, " ") mt
+	WHERE seas = c.`-car_code` and mt = c.`-car_code` ) as c1,
+	(SELECT c.name as name, s.name as sea, m.name as mountain
+	FROM hw5.world x, x.mondial.country c, x.mondial.sea s, x.mondial.mountain m, split(s.`-country`, " ") seas, split(m.`-country`, " ") mt
+	WHERE seas = c.`-car_code` and mt = c.`-car_code` ) as c2
 WHERE c1.sea = c2.sea AND c1.mountain = c2.mountain AND c1.name < c2.name;
 /*Duration of all jobs: 63.418 sec*/
 
@@ -141,12 +141,12 @@ Report the new runtime.  [Result Size: 7 rows of {"first_country":..., "second_c
 USE hw5index;
 SELECT distinct c1.name as first_country, c2.name as second_country
 FROM
-(SELECT c.name as name, s.name as sea, m.name as mountain
-FROM country c, sea s, mountain m, split(s.`-country`, " ") seas, split(m.`-country`, " ") mt
-WHERE seas = c.`-car_code` and mt = c.`-car_code` ) as c1,
-(SELECT c.name as name, s.name as sea, m.name as mountain
-FROM country c, sea s, mountain m, split(s.`-country`, " ") seas, split(m.`-country`, " ") mt
-WHERE seas = c.`-car_code` and mt = c.`-car_code` ) as c2
+	(SELECT c.name as name, s.name as sea, m.name as mountain
+	FROM country c, sea s, mountain m, split(s.`-country`, " ") seas, split(m.`-country`, " ") mt
+	WHERE seas = c.`-car_code` and mt = c.`-car_code` ) as c1,
+	(SELECT c.name as name, s.name as sea, m.name as mountain
+	FROM country c, sea s, mountain m, split(s.`-country`, " ") seas, split(m.`-country`, " ") mt
+	WHERE seas = c.`-car_code` and mt = c.`-car_code` ) as c2
 WHERE c1.sea = c2.sea AND c1.mountain = c2.mountain AND c1.name < c2.name;
 /*Duration of all jobs: 0.094 sec*/
 
